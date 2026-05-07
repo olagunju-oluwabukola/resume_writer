@@ -8,7 +8,7 @@ export interface DashboardAIState {
   aiAnalysis: AIRecommendations | null;
   generatedCL: string;
   tailoredResume: string;
-  skillsGap: SkillsGap | null;
-  interviewPrep: InterviewPrep | null;
-  resumeScore: ResumeScore | null;
+  skillsGap: SkillsGap | SkillsGap[] | any | null;
+  interviewPrep: InterviewPrep | any | null;
+  resumeScore: ResumeScore | any | null;
 }

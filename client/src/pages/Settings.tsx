@@ -114,36 +114,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      {/* AI API Key */}
-      <Card className="p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Key className="h-4 w-4 text-primary" />
-          </div>
-          <div>
-            <h2 className="font-poppins font-bold text-foreground">AI Integration</h2>
-            <p className="text-xs text-muted-foreground">Groq API for resume analysis</p>
-          </div>
-        </div>
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            Add your <a href="https://console.groq.com" target="_blank" rel="noopener" className="text-primary underline">Groq API key</a> to enable AI-powered resume analysis and cover letter generation (free tier available).
-          </p>
-          <div>
-            <Label>Groq API Key</Label>
-            <Input value={groqKey} onChange={e => setGroqKey(e.target.value)}
-              type="password" placeholder="gsk_..." className="mt-1 font-mono text-sm" />
-          </div>
-          <Button onClick={handleSaveGroqKey} variant="outline" className="gap-2">
-            <Key className="h-4 w-4" /> Save API Key
-          </Button>
-          {groqKey && (
-            <p className="text-xs text-green-600 flex items-center gap-1">
-              <Check className="h-3 w-3" /> API key configured
-            </p>
-          )}
-        </div>
-      </Card>
+
 
       {/* Notifications */}
       <Card className="p-6">

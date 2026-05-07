@@ -7,7 +7,13 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Zap, FileText, Mail, Target, BookOpen, Star, Loader, Plus,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Zap, FileText, Mail, Target, BookOpen, Star, Loader, Plus, ChevronDown,
 } from "lucide-react";
 import { Resume } from "@/lib/supabase";
 import { AITask } from "./types";
@@ -42,32 +48,40 @@ export function ResumeControls({
   loadingTask, hasResume, onRunTask, onNewResume,
 }: ResumeControlsProps) {
   return (
-    <div className="flex flex-col gap-3 h-full overflow-y-auto pr-1">
-      {/* Resume selector */}
+    <div className="flex flex-col gap-3 h-full overflow-hidden">
+      {/* Resume selector — dropdown scrolls internally if many resumes */}
       <Card className="p-3 flex-shrink-0">
         <Label className="text-xs font-semibold mb-2 block">Active Resume</Label>
         {resumes.length > 0 ? (
           <Select value={selectedResumeId || ""} onValueChange={onSelectResume}>
-            <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Select resume..." /></SelectTrigger>
-            <SelectContent>
-              {resumes.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+            <SelectTrigger className="h-8 text-sm">
+              <SelectValue placeholder="Select resume..." />
+            </SelectTrigger>
+            <SelectContent className="max-h-40 overflow-y-auto">
+              {resumes.map(r => (
+                <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         ) : (
-          <Button onClick={onNewResume} size="sm" className="w-full bg-primary hover:bg-primary/90 gap-2 h-8 text-xs">
+          <Button
+            onClick={onNewResume}
+            size="sm"
+            className="w-full bg-primary hover:bg-primary/90 gap-2 h-8 text-xs"
+          >
             <Plus className="h-3 w-3" /> Create Your First Resume
           </Button>
         )}
       </Card>
 
-      {/* Job description — fixed height, no grow */}
+      {/* Job description */}
       <Card className="p-3 flex-shrink-0">
         <Label className="text-xs font-semibold mb-2 block">Job Description</Label>
         <Textarea
           value={jobDescription}
           onChange={e => onJobDescriptionChange(e.target.value)}
           placeholder="Paste the job description here..."
-          className="text-xs resize-none h-32"
+          className="text-xs resize-none h-32 max-h-32 overflow-y-auto"
         />
         <Input
           value={companyName}
@@ -75,27 +89,13 @@ export function ResumeControls({
           placeholder="Company name (for cover letter)"
           className="h-8 text-xs mt-2"
         />
-        <p className="text-xs text-muted-foreground text-right mt-1">{jobDescription.length} chars</p>
+        <p className="text-xs text-muted-foreground text-right mt-1">
+          {jobDescription.length} chars
+        </p>
       </Card>
 
-      {/* AI tools */}
-      <Card className="p-3 flex-shrink-0">
-        <p className="text-xs font-semibold mb-2">AI Tools</p>
-        <div className="space-y-1.5">
-          {AI_TOOLS.map(({ task, icon, label }) => (
-            <Button
-              key={task}
-              onClick={() => onRunTask(task)}
-              disabled={!!loadingTask || !hasResume}
-              variant="outline"
-              className="w-full justify-start gap-2 h-8 text-xs hover:bg-primary/5 hover:border-primary/40"
-            >
-              {loadingTask === task ? <Loader className="h-3.5 w-3.5 animate-spin" /> : icon}
-              {loadingTask === task ? "Working..." : label}
-            </Button>
-          ))}
-        </div>
-      </Card>
+
+
     </div>
   );
 }
