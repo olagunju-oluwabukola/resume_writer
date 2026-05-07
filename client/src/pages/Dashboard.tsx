@@ -60,13 +60,13 @@ export default function Dashboard() {
   const currentResume = resumes.find(r => r.id === selectedResumeId)
     ?? (resumes.length > 0 ? resumes[0] : null);
 
-  // Helper to check if value is an error object
+
   const isErrorObject = (value: any): boolean => {
     return value && typeof value === 'object' &&
            ('gap' in value || 'resource' in value || 'action' in value);
   };
 
-  // Helper to safely extract text from API responses
+  //  extract text from API responses
   const safeString = (value: any): string => {
     if (typeof value === 'string') return value;
     if (isErrorObject(value)) {
@@ -78,11 +78,9 @@ export default function Dashboard() {
     return String(value || '');
   };
 
-  // Helper to safely parse JSON responses
   const safeParseJSON = <T,>(value: any, defaultValue: T): T => {
     if (!value) return defaultValue;
 
-    // Check for error object
     if (isErrorObject(value)) {
       const errorMsg = value.action || 'API Error';
       toast.error(errorMsg);
@@ -94,7 +92,7 @@ export default function Dashboard() {
       return value as T;
     }
 
-    // Try to parse if it's a string
+
     if (typeof value === 'string') {
       try {
         const parsed = JSON.parse(value);
@@ -277,20 +275,20 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-screen max-h-screen flex flex-col gap-4 p-4 md:p-6 overflow-hidden bg-background">
+    <div className="md:h-screen md:max-h-screen flex flex-col gap-4 p-4 md:p-6 overflow-hidden bg-background">
 
       {/* Header row */}
-      <div className="flex items-center justify-between flex-shrink-0">
+      <div className="md:flex items-center justify-between md:flex-shrink-0">
         <div>
           <h1 className="font-poppins text-xl md:text-2xl font-bold text-foreground">
             Welcome back, {userProfile?.full_name?.split(" ")[0] || "there"}! 👋
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5 mb-8 md:mb-0">
             AI-powered resume tailoring and career tools.
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="md:flex gap-2">
           {/* AI Tools Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -336,7 +334,7 @@ export default function Dashboard() {
         <StatsBar stats={stats} />
       </div>
 
-      <div className="flex gap-4 flex-1 min-h-0 overflow-hidden">
+      <div className="md:flex gap-4 flex-1 min-h-0 overflow-hidden mt-8 md:mb-0">
         <div className="w-64 flex-shrink-0 overflow-y-auto">
           <ResumeControls
             resumes={resumes}
@@ -353,7 +351,7 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="flex-1 min-w-0 overflow-hidden flex flex-col">
+        <div className="flex-1 min-w-0 overflow-hidden flex flex-col mt-8 md:mb-0">
           <ResultsPanel
             currentResume={currentResume}
             userName={userProfile?.full_name || ""}

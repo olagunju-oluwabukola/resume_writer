@@ -15,7 +15,7 @@ export function StatsBar({ stats }: StatsBarProps) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-3 flex-shrink-0">
+    <div className="grid md:grid-cols-4 gap-3 flex-shrink-0">
       {items.map(s => (
         <Card key={s.label} className={`p-3 flex items-center gap-3 border-0 shadow-sm ${s.cardBg}`}>
           <div className={`rounded-lg p-2 ${s.iconBg} ${s.iconColor} flex-shrink-0`}>{s.icon}</div>
