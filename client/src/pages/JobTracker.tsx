@@ -18,7 +18,7 @@ import { useData } from "@/contexts/DataContext";
 import { TrackedJob } from "@/lib/storage";
 import { toast } from "sonner";
 
-/* ─── Types ──────────────────────────────────────────────────────────── */
+
 
 interface MuseJob {
   id: number;
@@ -32,9 +32,7 @@ interface MuseJob {
   contents: string;
 }
 
-/* ─── The Muse accepted categories ──────────────────────────────────── */
-// These are the EXACT strings the API accepts for ?category=
-// Source: https://www.themuse.com/developers/api/v2
+
 const MUSE_CATEGORIES = [
   "Account Management", "Business & Strategy", "Creative & Design",
   "Customer Service", "Data Science", "DevOps & Sysadmin",
@@ -47,7 +45,6 @@ const MUSE_CATEGORIES = [
   "Software Engineering", "UX & Design", "Writing",
 ];
 
-/* ─── Groq key helper ────────────────────────────────────────────────── */
 
 function getGroqKey(): string {
   const envKey = import.meta.env.VITE_GROQ_API_KEY;
@@ -55,13 +52,6 @@ function getGroqKey(): string {
   return localStorage.getItem("resumerx_groq_key") || "";
 }
 
-/* ─── Groq: map free text → Muse category ───────────────────────────── */
-
-/**
- * Sends the user's query (or resume snippet) to Groq and asks it to
- * return the single best matching Muse category from the fixed list.
- * Returns null if Groq is unavailable — caller falls back to fuzzy match.
- */
 async function groqPickCategory(input: string, isResume = false): Promise<string | null> {
   const key = getGroqKey();
   if (!key) return null;
@@ -100,8 +90,6 @@ CATEGORIES: ${categoryList}`;
     if (!res.ok) return null;
     const data = await res.json();
     const raw  = (data.choices?.[0]?.message?.content || "").trim().replace(/['"]/g, "");
-
-    // Validate it's actually in our list (model can hallucinate)
     const match = MUSE_CATEGORIES.find(c => c.toLowerCase() === raw.toLowerCase());
     return match || fuzzyMatchCategory(raw);
   } catch {
@@ -109,7 +97,6 @@ CATEGORIES: ${categoryList}`;
   }
 }
 
-/** Simple fuzzy fallback: find the category whose words overlap most with the query */
 function fuzzyMatchCategory(query: string): string {
   const q = query.toLowerCase();
   let best = "Software Engineering";
@@ -123,15 +110,12 @@ function fuzzyMatchCategory(query: string): string {
   return best;
 }
 
-/* ─── The Muse API ───────────────────────────────────────────────────── */
 
 async function searchMuse(category: string, page = 1): Promise<{
   results: MuseJob[];
   page_count: number;
   total: number;
 }> {
-  // NOTE: location filter omitted — The Muse requires exact predefined location
-  // strings and silently returns 0 results for anything else.
   const params = new URLSearchParams({
     page:     String(page),
     category: category,
@@ -149,7 +133,6 @@ async function searchMuse(category: string, page = 1): Promise<{
   };
 }
 
-/* ─── Misc helpers ───────────────────────────────────────────────────── */
 
 const emptyForm = {
   title: "", company: "", location: "", salary: "",
@@ -175,8 +158,6 @@ function isDeadlinePast(dl: string) {
   return dl ? new Date(dl) < new Date() : false;
 }
 
-/* ─── Component ──────────────────────────────────────────────────────── */
-
 export default function JobTracker() {
   const {
     trackedJobs, addTrackedJob, updateTrackedJob,
@@ -190,7 +171,6 @@ export default function JobTracker() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [form, setForm]                   = useState(emptyForm);
 
-  // search
   const [queryInput, setQueryInput]     = useState("");
   const [vacancies, setVacancies]       = useState<MuseJob[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -257,7 +237,6 @@ export default function JobTracker() {
     toast.success(`Added ${job.company} application!`);
   };
 
-  /* ── Search core ── */
 
   const runMuseSearch = async (category: string, page = 1) => {
     setSearchLoading(true);
@@ -283,7 +262,6 @@ export default function JobTracker() {
     setAiLoading(true);
     setSearchError("");
     try {
-      // Try Groq first, fall back to fuzzy match
       const category = (await groqPickCategory(queryInput, false)) || fuzzyMatchCategory(queryInput);
       toast.info(`Searching in: ${category}`);
       await runMuseSearch(category, 1);
@@ -341,7 +319,6 @@ export default function JobTracker() {
 
   const isLoading = searchLoading || aiLoading;
 
-  /* ── Render ── */
 
   return (
     <div className="flex-1 space-y-6 p-4 md:p-8">
@@ -416,7 +393,7 @@ export default function JobTracker() {
               </Button>
             </div>
 
-            {/* AI Search row */}
+
             <div className="flex items-center gap-3 pt-1 border-t border-border">
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground">AI Search from my resume</p>
@@ -493,7 +470,6 @@ export default function JobTracker() {
             </div>
           )}
 
-          {/* Results */}
           {!isLoading && vacancies.length > 0 && (
             <>
               <div className="flex items-center justify-between">
@@ -610,7 +586,7 @@ export default function JobTracker() {
           )}
         </TabsContent>
 
-        {/* ══ MY TRACKER ══ */}
+
         <TabsContent value="tracker" className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <Card className="p-4">
@@ -736,7 +712,6 @@ export default function JobTracker() {
         </TabsContent>
       </Tabs>
 
-      {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
