@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 
 // ── Types ───────────────────────────────────────────────────────────
 interface Feature {
@@ -338,12 +339,12 @@ export default function Landing(): JSX.Element {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          <Link to="/login"
             type="button"
             className="px-5 py-2.5 text-sm font-semibold text-violet-700 border border-violet-300 rounded-xl bg-white hover:bg-violet-50 hover:border-violet-600 transition-all"
           >
             Log in
-          </button>
+          </Link>
           <button
             type="button"
             className="px-5 py-2.5 text-sm font-bold text-white bg-violet-700 rounded-xl hover:bg-violet-600 transition-all hover:-translate-y-px hover:shadow-lg hover:shadow-violet-700/30"
