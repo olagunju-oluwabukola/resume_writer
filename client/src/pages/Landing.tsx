@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { useState } from "react";
+import { Link } from "wouter"; // ← Add this import
+import { Navigation } from "../components/nav";
+import { Footer } from "../components/footer";
 
 // ── Types ───────────────────────────────────────────────────────────
 interface Feature {
@@ -34,8 +36,6 @@ interface FaqEntry {
 }
 
 // ── Constants ────────────────────────────────────────────────────────
-const NAV_LINKS: readonly string[] = ["Features", "How it Works", "Success Stories", "FAQ"];
-
 const STATS: readonly Stat[] = [
   { value: "6", label: "AI-powered tools" },
   { value: "< 30s", label: "to tailor a resume" },
@@ -151,7 +151,6 @@ const FAQS: readonly FaqEntry[] = [
 ];
 
 const SIDEBAR_ITEMS = ["Dashboard", "My Resumes", "Cover Letters", "Applications", "Interview Prep", "Analytics"] as const;
-
 const AVATAR_INITIALS = ["AO", "KA", "TB", "MO", "EI"] as const;
 
 // ── Sub-components ───────────────────────────────────────────────────
@@ -300,59 +299,11 @@ function StepMockup({ img }: { img: Step["img"] }): JSX.Element | null {
 
 // ── Main Component ───────────────────────────────────────────────────
 export default function Landing(): JSX.Element {
-  const [scrolled, setScrolled] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const currentYear = new Date().getFullYear();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div className="min-h-screen bg-white text-[#1a1033] overflow-x-hidden font-sans antialiased">
-
-      {/* ── NAV ── */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-10 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-xl border-b border-violet-100 shadow-sm"
-            : "bg-transparent border-b border-transparent"
-        }`}
-        aria-label="Primary navigation"
-      >
-        <div className="text-[22px] font-black tracking-tight text-[#0F0920]">
-          Resume<span className="text-violet-700">Rx</span>
-        </div>
-
-        <div className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l}
-              href={`#${l.toLowerCase().replace(/\s/g, "-")}`}
-              className="text-gray-500 text-sm font-medium hover:text-violet-700 transition-colors no-underline"
-            >
-              {l}
-            </a>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link to="/login"
-            type="button"
-            className="px-5 py-2.5 text-sm font-semibold text-violet-700 border border-violet-300 rounded-xl bg-white hover:bg-violet-50 hover:border-violet-600 transition-all"
-          >
-            Log in
-          </Link>
-          <button
-            type="button"
-            className="px-5 py-2.5 text-sm font-bold text-white bg-violet-700 rounded-xl hover:bg-violet-600 transition-all hover:-translate-y-px hover:shadow-lg hover:shadow-violet-700/30"
-          >
-            Get started free
-          </button>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* ── HERO ── */}
       <section
@@ -377,7 +328,7 @@ export default function Landing(): JSX.Element {
           aria-hidden="true"
         />
 
-        <div className="relative z-10 max-w-[1100px] mx-auto px-10 text-center">
+        <div className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-10 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-300 rounded-full px-4 py-1.5 text-xs font-bold text-violet-700 uppercase tracking-widest mb-7">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-700 inline-block" />
@@ -387,7 +338,7 @@ export default function Landing(): JSX.Element {
           {/* Headline */}
           <h1
             id="hero-heading"
-            className="text-[clamp(2.8rem,5.5vw,4.2rem)] font-black leading-[1.07] tracking-[-0.04em] text-[#0F0920] mb-6"
+            className="text-[clamp(2.2rem,5.5vw,4.2rem)] font-black leading-[1.07] tracking-[-0.04em] text-[#0F0920] mb-6"
           >
             Land Your Dream Job
             <br />
@@ -412,25 +363,25 @@ export default function Landing(): JSX.Element {
           </h1>
 
           {/* Sub */}
-          <p className="text-[clamp(1rem,1.5vw,1.15rem)] text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-[clamp(0.95rem,1.5vw,1.15rem)] text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed">
             ResumeRx uses AI to tailor your resume, write cover letters, close skill gaps, and
-            prepare you for interviews — all from one dashboard.
+            prepare you for interviews  all from one dashboard.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 bg-violet-700 text-white font-bold text-base px-7 py-3.5 rounded-xl hover:bg-violet-600 hover:-translate-y-px hover:shadow-lg hover:shadow-violet-700/30 transition-all"
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 bg-violet-700 text-white font-bold text-base px-7 py-3.5 rounded-xl hover:bg-violet-600 hover:-translate-y-px hover:shadow-lg hover:shadow-violet-700/30 transition-all no-underline"
             >
               ✦ Get Started for Free
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 bg-white text-violet-700 font-semibold text-base px-6 py-3.5 rounded-xl border border-violet-300 hover:bg-violet-50 hover:border-violet-600 transition-all"
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 bg-white text-violet-700 font-semibold text-base px-6 py-3.5 rounded-xl border border-violet-300 hover:bg-violet-50 hover:border-violet-600 transition-all no-underline"
             >
               I already have an account →
-            </button>
+            </Link>
           </div>
 
           {/* Social proof */}
@@ -456,7 +407,7 @@ export default function Landing(): JSX.Element {
                 ))}
               </div>
               <div className="text-xs text-gray-400">
-                <strong className="text-gray-600">4.9</strong> · Trusted by 10,000+ job seekers
+                <strong className="text-gray-600">4.9</strong> · Trusted by job seekers like you.
               </div>
             </div>
           </div>
@@ -554,7 +505,7 @@ export default function Landing(): JSX.Element {
       </section>
 
       {/* ── STATS BAR ── */}
-      <section className="bg-violet-700 py-10 px-10" aria-label="Key statistics">
+      <section className="bg-violet-700 py-10 px-4 sm:px-10" aria-label="Key statistics">
         <div className="max-w-[1100px] mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8">
           {STATS.map(({ value, label }) => (
             <div key={label} className="text-center">
@@ -568,7 +519,7 @@ export default function Landing(): JSX.Element {
       {/* ── FEATURES ── */}
       <section
         id="features"
-        className="relative py-24 px-10 overflow-hidden"
+        className="relative py-24 px-4 sm:px-10 overflow-hidden"
         style={{ background: "linear-gradient(180deg, #fff 0%, #FDFAFF 100%)" }}
         aria-labelledby="features-heading"
       >
@@ -584,7 +535,7 @@ export default function Landing(): JSX.Element {
             </div>
             <h2
               id="features-heading"
-              className="text-[clamp(2rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] mb-4 leading-[1.1]"
+              className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] mb-4 leading-[1.1]"
             >
               Our tools cover everything you need
               <br />
@@ -620,7 +571,7 @@ export default function Landing(): JSX.Element {
       {/* ── HOW IT WORKS ── */}
       <section
         id="how-it-works"
-        className="py-24 px-10 bg-[#FDFAFF] border-t border-b border-violet-100"
+        className="py-24 px-4 sm:px-10 bg-[#FDFAFF] border-t border-b border-violet-100"
         aria-labelledby="how-heading"
       >
         <div className="max-w-[1100px] mx-auto">
@@ -630,7 +581,7 @@ export default function Landing(): JSX.Element {
             </div>
             <h2
               id="how-heading"
-              className="text-[clamp(2rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] leading-[1.1]"
+              className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] leading-[1.1]"
             >
               Your path to your dream job
               <br />
@@ -695,7 +646,7 @@ export default function Landing(): JSX.Element {
       {/* ── TESTIMONIALS ── */}
       <section
         id="success-stories"
-        className="py-24 px-10 bg-white"
+        className="py-24 px-4 sm:px-10 bg-white"
         aria-labelledby="testimonials-heading"
       >
         <div className="max-w-[1100px] mx-auto">
@@ -705,7 +656,7 @@ export default function Landing(): JSX.Element {
             </div>
             <h2
               id="testimonials-heading"
-              className="text-[clamp(2rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] leading-[1.1]"
+              className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-black tracking-[-0.04em] text-[#0F0920] leading-[1.1]"
             >
               Join thousands who
               <br />
@@ -715,7 +666,7 @@ export default function Landing(): JSX.Element {
 
           {/* Featured */}
           <div
-            className="rounded-2xl p-12 mb-6 relative overflow-hidden"
+            className="rounded-2xl p-8 sm:p-12 mb-6 relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)" }}
           >
             <div
@@ -730,7 +681,7 @@ export default function Landing(): JSX.Element {
             />
             <div className="relative">
               <div className="text-5xl text-violet-300 leading-none mb-5">"</div>
-              <p className="text-xl text-white font-medium leading-relaxed mb-7 max-w-3xl">
+              <p className="text-lg sm:text-xl text-white font-medium leading-relaxed mb-7 max-w-3xl">
                 I'd been applying for months with no callbacks. ResumeRx tailored my CV for each
                 role in under a minute. Two weeks later I had three interviews lined up — and I
                 landed a role above my expected salary.
@@ -777,7 +728,7 @@ export default function Landing(): JSX.Element {
       {/* ── FAQ ── */}
       <section
         id="faq"
-        className="py-24 px-10 bg-[#FDFAFF] border-t border-violet-100"
+        className="py-24 px-4 sm:px-10 bg-[#FDFAFF] border-t border-violet-100"
         aria-labelledby="faq-heading"
       >
         <div className="max-w-[740px] mx-auto">
@@ -787,7 +738,7 @@ export default function Landing(): JSX.Element {
             </div>
             <h2
               id="faq-heading"
-              className="text-[clamp(2rem,3.5vw,2.6rem)] font-black tracking-[-0.04em] text-[#0F0920]"
+              className="text-[clamp(1.8rem,3.5vw,2.6rem)] font-black tracking-[-0.04em] text-[#0F0920]"
             >
               Frequently Asked Questions
             </h2>
@@ -801,9 +752,9 @@ export default function Landing(): JSX.Element {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="py-16 px-10 bg-white" aria-labelledby="cta-heading">
+      <section className="py-16 px-4 sm:px-10 bg-white" aria-labelledby="cta-heading">
         <div
-          className="max-w-[1100px] mx-auto rounded-3xl py-20 px-16 text-center relative overflow-hidden"
+          className="max-w-[1100px] mx-auto rounded-3xl py-16 sm:py-20 px-6 sm:px-16 text-center relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)" }}
         >
           <div
@@ -819,66 +770,24 @@ export default function Landing(): JSX.Element {
           <div className="relative">
             <h2
               id="cta-heading"
-              className="text-[clamp(2rem,3.5vw,3rem)] font-black text-white tracking-[-0.04em] mb-4 leading-[1.1]"
+              className="text-[clamp(1.8rem,3.5vw,3rem)] font-black text-white tracking-[-0.04em] mb-4 leading-[1.1]"
             >
               Join the 10,000+ who said goodbye
               <br />
               to job rejections.
             </h2>
             <p className="text-violet-300 text-base mb-9">Free to start. No credit card required.</p>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 bg-white text-violet-700 font-bold text-base px-8 py-3.5 rounded-xl hover:bg-violet-50 transition-all"
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 bg-white text-violet-700 font-bold text-base px-8 py-3.5 rounded-xl hover:bg-violet-50 transition-all no-underline"
             >
               Get Started for Free →
-            </button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="bg-[#0F0920] pt-16 pb-10 px-10 text-gray-400">
-        <div className="max-w-[1100px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-12">
-            <div className="col-span-2 md:col-span-1">
-              <div className="text-[22px] font-black text-white mb-3 tracking-tight">
-                Resume<span className="text-violet-400">Rx</span>
-              </div>
-              <p className="text-sm leading-relaxed max-w-[200px]">
-                AI-powered career tools to help you land the role you deserve.
-              </p>
-            </div>
-            {(
-              [
-                { heading: "Product", items: ["Resume Tailoring", "Cover Letters", "Skills Gap", "Interview Prep", "App Tracker"] },
-                { heading: "Resources", items: ["Blog", "Guides", "FAQ", "Changelog"] },
-                { heading: "Company", items: ["About", "Careers", "Contact"] },
-                { heading: "Legal", items: ["Privacy", "Terms", "Cookies"] },
-              ] as const
-            ).map(({ heading, items }) => (
-              <div key={heading}>
-                <div className="text-xs font-bold text-violet-500 uppercase tracking-widest mb-4">
-                  {heading}
-                </div>
-                {items.map((item) => (
-                  <div key={item} className="text-sm mb-2.5 cursor-default hover:text-gray-300 transition-colors">
-                    {item}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-[#1F1035] pt-7 flex flex-wrap justify-between items-center gap-3">
-            <div className="text-xs">© {currentYear} ResumeRx. Built with AI.</div>
-            <div className="flex gap-5 text-xs">
-              {(["Twitter", "LinkedIn", "Instagram"] as const).map((s) => (
-                <span key={s} className="cursor-default hover:text-gray-300 transition-colors">{s}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

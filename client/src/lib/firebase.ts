@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,41 +9,86 @@ import {
   type User,
 } from "firebase/auth";
 
-// ── Replace these with your Firebase project config ──
+// ── Firebase Configuration ──
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "YOUR_AUTH_DOMAIN",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "YOUR_PROJECT_ID",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "YOUR_STORAGE_BUCKET",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "YOUR_SENDER_ID",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_APP_ID",
+  apiKey: "AIzaSyB_szOjQVy055osH0j05Uc3LfzFRPM1N9A",
+  authDomain: "resumerx-6c214.firebaseapp.com",
+  projectId: "resumerx-6c214",
+  storageBucket: "resumerx-6c214.firebasestorage.app",
+  messagingSenderId: "703789472406",
+  appId: "1:703789472406:web:38870b35c26f27f72b00b7",
+  measurementId: "G-RQ6XDSHGME"
 };
 
-const app = initializeApp(firebaseConfig);
+// Log config (without sensitive data)
+console.log("Firebase Config:", {
+  apiKey: firebaseConfig.apiKey?.slice(0, 5) + "...",
+  authDomain: firebaseConfig.authDomain,
+  projectId: firebaseConfig.projectId,
+});
+
+// Initialize Firebase (prevent duplicate initialization)
+let app;
+try {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  console.log("Firebase initialized successfully with project:", firebaseConfig.projectId);
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+  throw error;
+}
+
 export const auth = getAuth(app);
+console.log("Auth initialized");
 
 export type { User };
 
+// ── Auth Functions ──
 export async function registerWithEmail(
   email: string,
   password: string,
   fullName: string
 ): Promise<User> {
-  const { user } = await createUserWithEmailAndPassword(auth, email, password);
-  await updateProfile(user, { displayName: fullName });
-  return user;
+  try {
+    console.log("Attempting to create user with email:", email);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log("User created successfully");
+
+    if (userCredential.user) {
+      await updateProfile(userCredential.user, { displayName: fullName });
+      console.log("Profile updated with name:", fullName);
+    }
+
+    return userCredential.user;
+  } catch (error: any) {
+    console.error("Registration error in firebase.ts:", error);
+    console.error("Error code:", error.code);
+    console.error("Error message:", error.message);
+    throw error;
+  }
 }
 
 export async function loginWithEmail(
   email: string,
   password: string
 ): Promise<User> {
-  const { user } = await signInWithEmailAndPassword(auth, email, password);
-  return user;
+  try {
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
+    return user;
+  } catch (error: any) {
+    console.error("Login error:", error);
+    console.error("Error code:", error.code);
+    console.error("Error message:", error.message);
+    throw error;
+  }
 }
 
 export async function logout(): Promise<void> {
-  await signOut(auth);
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Logout error:", error);
+    throw error;
+  }
 }
 
 export function onAuthChange(callback: (user: User | null) => void) {
