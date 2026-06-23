@@ -94,8 +94,6 @@ export function ResumeControls({
         </p>
       </Card>
 
-
-
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,11 +113,11 @@ function TabEmptyState({
       <div>
         <p className="text-sm font-semibold text-foreground/70">{title}</p>
         <p className="text-xs text-muted-foreground mt-1 max-w-[220px] leading-relaxed">{description}</p>
-        {requiresJD && (
+        {/* {requiresJD && (
           <p className="text-[10px] text-amber-500/80 mt-1.5 max-w-[220px]">
             ⚠ Paste a job description in the left panel first.
           </p>
-        )}
+        )} */}
       </div>
       <Button
         size="sm"
@@ -206,18 +207,23 @@ export function ResultsPanel({
         onValueChange={(v) => onTabChange(v as ResultTab)}
         className="flex flex-col flex-1 overflow-hidden"
       >
-        <TabsList className="grid grid-cols-7 rounded-none border-b h-10 bg-muted/20 flex-shrink-0">
-          {TABS.map((t) => (
-            <TabsTrigger
-              key={t.value}
-              value={t.value}
-              className="h-full data-[state=active]:bg-background px-0"
-            >
-              <span className="hidden sm:inline text-[10px] md:text-xs">{t.label}</span>
-              <span className="sm:hidden text-[9px]">{t.short}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+     <TabsList className="flex justify-between rounded-none border-b h-10 bg-muted/20 flex-shrink-0 px-3 gap-2">
+  {TABS.map((t) => (
+    <TabsTrigger
+      key={t.value}
+      value={t.value}
+      className="flex-1 h-full rounded-md px-2 text-[10px] md:text-xs font-medium transition-colors
+        data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-sm
+        data-[state=inactive]:bg-gray-100 data-[state=inactive]:text-gray-600
+        data-[state=inactive]:hover:bg-gray-200
+        border-0 shadow-none ring-0 outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+        min-w-[60px]" // Add min-width for better spacing
+    >
+      <span className="hidden sm:inline">{t.label}</span>
+      <span className="sm:hidden">{t.short}</span>
+    </TabsTrigger>
+  ))}
+</TabsList>
 
         <div className="flex-1 overflow-hidden relative">
 
